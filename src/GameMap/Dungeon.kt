@@ -1,0 +1,4 @@
+package GameMap
+
+class Dungeon {
+}

@@ -1,0 +1,4 @@
+package GameModes
+
+class Gauntlet {
+}

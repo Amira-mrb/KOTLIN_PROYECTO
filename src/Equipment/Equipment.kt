@@ -1,0 +1,4 @@
+package Equipment
+
+class Equipment {
+}

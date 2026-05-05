@@ -1,0 +1,4 @@
+package GameDataManagement
+
+class CharacterFactory {
+}
