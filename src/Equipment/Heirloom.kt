@@ -4,15 +4,15 @@ import Characters.Stats
 
 class Heirloom : Equipment {
 
-    private var type: String = ""
+    private var type: String = "";
 
-    // Constructor con parámetros
+    // monstructor con parámetros
     constructor(name: String, equipmentStats: Stats, rarity: String, value: Int, type: String)
             : super(name, equipmentStats, rarity, value) {
         setType(type)
     }
 
-    // Constructor de copia
+    // constructor de copia
     constructor(other: Heirloom) : super(other) {
         this.type = other.type
     }
