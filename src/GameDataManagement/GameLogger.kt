@@ -1,4 +1,5 @@
 package GameDataManagement
 
 class GameLogger {
+
 }

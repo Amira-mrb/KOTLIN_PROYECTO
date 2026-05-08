@@ -1,0 +1,4 @@
+package Characters
+
+class Character {
+}
