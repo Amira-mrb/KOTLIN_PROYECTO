@@ -2,7 +2,6 @@ package GameMap
 
 import Characters.Subclasses.Monster
 import kotlin.random.Random
-import kotlin.*
 
 class Dungeon {
 
@@ -53,4 +52,3 @@ class Dungeon {
         return encounters
     }
 }
-

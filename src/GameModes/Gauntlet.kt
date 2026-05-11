@@ -1,13 +1,7 @@
 package GameModes
 
-import Characters.Character
-
-
 import Characters.Subclasses.Monster
-import Equipment.Equipment
-import Equipment.Weapon
-import Equipment.Armor
-import Equipment.Heirloom
+import Equipment.*
 import GameDataManagement.CombatLogManager
 import GameMap.Dungeon
 import Combat.Combat
@@ -21,16 +15,22 @@ import java.util.HashSet
 
 class Gauntlet {
 
-    private dungeon: Dungeon;
-
-
+    private var dungeon: Dungeon? = null
     private var playerParty: ArrayList<Character> = ArrayList()
+
+    @Throws(IOException::class)
+    fun initGauntlet(dungeonFile: File, players: ArrayList<Character>) {
+        loadDungeon(dungeonFile)
+        setPlayerParty(players)
+    }
+
     fun playGauntlet() {
         var remainingCombats = 10
 
         while (remainingCombats > 0 && playerParty.isNotEmpty()) {
 
-            val combatPrize = Combat.groupCombat(playerParty, dungeon.randomFight())
+            val combatPrize =
+                Combat.groupCombat(playerParty, dungeon!!.randomFight())
 
             if (playerParty.isNotEmpty()) {
                 for (equip in combatPrize) {
@@ -44,45 +44,52 @@ class Gauntlet {
             remainingCombats--
         }
 
-
         if (playerParty.isNotEmpty())
             CombatLogManager.out("Congratulations! You defeated the gauntlet and triumphed over your quest!")
         else
             CombatLogManager.out("The adventurers died an ignominious death...")
     }
 
+    @Throws(IOException::class)
+    private fun loadDungeon(dungeonFile: File) {
+        val dungeonName: String
+        val dungeonLevel: Int
 
-        private fun setPlayerParty(playerParty: ArrayList<Character>) {
+        if (dungeonFile.exists() && dungeonFile.canRead()) {
+
+            val br = BufferedReader(FileReader(dungeonFile))
+            var line: String?
+            var split: List<String>
+            val monsterList = HashSet<Monster>()
+
+            line = br.readLine()
+            split = line.split(",")
+            dungeonName = split[0]
+            dungeonLevel = split[1].trim().toInt()
+
+            while (br.readLine().also { line = it } != null) {
+                split = line!!.split(",")
+                monsterList.add(Monster(split[1], split[0]))
+            }
+
+            dungeon = Dungeon(dungeonName, dungeonLevel, monsterList)
+            br.close()
+
+        } else {
+            throw IOException("Can't read dungeon file.")
+        }
+    }
+
+    private fun setPlayerParty(playerParty: ArrayList<Character>) {
         this.playerParty = ArrayList(playerParty)
     }
 
-    private fun setName(name: String) {
-
-    }
-
-    private fun setLevel(level: Int) {
-
-    }
-
-    private fun setMonsters(monsters: HashSet<Monster>) {
-
-    }
-
-    private fun getMonsters(): HashSet<Monster> {
-
-        return getMonsters()
-
-    }
-
     private fun equipPrize(player: Character, prize: Equipment): Boolean {
-        var result = false
-
-        when (prize.javaClass.simpleName) {
-            "Weapon" -> result = player.equipWeapon(prize as Weapon)
-            "Armor" -> result = player.equipArmor(prize as Armor)
-            "Heirloom" -> result = player.equipHeirloom(prize as Heirloom)
+        return when (prize.javaClass.simpleName) {
+            "Weapon" -> player.equipWeapon(prize as Weapon)
+            "Armor" -> player.equipArmor(prize as Armor)
+            "Heirloom" -> player.equipHeirloom(prize as Heirloom)
+            else -> false
         }
-
-        return result
     }
 }
