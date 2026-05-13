@@ -7,60 +7,92 @@ import Equipment.Armor
 import Equipment.Weapon
 import GameDataManagement.CombatLogManager
 import java.util.Random
-import javax.xml.stream.events.Characters
 
-class Thief : Characters {
+/**
+ * Clase Thief.
+ * Personaje rápido y centrado en el daño por velocidad.
+ */
+class Thief : Character {
 
+    /**
+     * Constructor por defecto.
+     */
     constructor() : super()
 
+    /**
+     * Constructor con datos básicos.
+     */
     constructor(name: String, race: String, lvl: Int, isCPU: Boolean)
             : super(name, race, lvl, isCPU)
 
+    /**
+     * Constructor con stats.
+     */
     constructor(name: String, race: String, lvl: Int, stats: Stats, isCPU: Boolean)
             : super(name, race, lvl, stats, isCPU)
 
+    /**
+     * Constructor de copia.
+     */
     constructor(other: Thief) : super(other)
 
-    override fun getClassName(): String {
-        return "Thief"
-    }
+    /**
+     * Nombre de la clase.
+     */
+    override fun getClassName(): String = "Thief"
 
+    /**
+     * Subida de nivel del ladrón.
+     * Aumenta stats según probabilidades.
+     */
     override fun onLevelUp() {
         val r = Random()
 
-        if (r.nextInt(0, 100) >= 60) // HP increase
-            getStats().setHp(getStats().getHp() + (getStats().getHp() * 0.1).toInt())
+        if (r.nextInt(0, 100) >= 60)
+            getStats().hp += (getStats().hp * 0.1).toInt()
 
-        if (r.nextInt(0, 100) >= 40) // ATK increase
-            getStats().setAtk(getStats().getAtk() + 1)
+        if (r.nextInt(0, 100) >= 40)
+            getStats().atk += 1
 
-        if (r.nextInt(0, 100) >= 60) // ARM increase
-            getStats().setArm(getStats().getArm() + 1)
+        if (r.nextInt(0, 100) >= 60)
+            getStats().arm += 1
 
-        if (r.nextInt(0, 100) >= 15) // SPD increase
-            getStats().setSpd(getStats().getSpd() + 2)
+        if (r.nextInt(0, 100) >= 15)
+            getStats().spd += 2
 
-        if (r.nextInt(0, 100) >= 60) // RES increase
-            getStats().setRes(getStats().getRes() + 1)
+        if (r.nextInt(0, 100) >= 60)
+            getStats().res += 1
     }
 
-    override fun initializeStats(): Stats {
-        return Stats(90, 12, 8, 15, 8)
-    }
+    /**
+     * Stats base del ladrón.
+     */
+    override fun initializeStats(): Stats = Stats(90, 12, 8, 15, 8)
 
-    override fun displaySpecialAction(): String {
-        return "2. Steal"
-    }
+    /**
+     * Texto de la acción especial.
+     */
+    override fun displaySpecialAction(): String = "2. Steal"
 
+    /**
+     * Acción especial del ladrón.
+     * Hace daño basado en la velocidad.
+     */
     override fun performSpecialAction(): Attack {
         CombatLogManager.out("${getName()} violently mugs their opponent!")
-        return Attack(getStats().getSpd(), "MAG")
+        return Attack(getStats().spd, "MAG")
     }
 
+    /**
+     * Armas permitidas para el ladrón.
+     */
     override fun isWeaponValid(w: Weapon): Boolean {
         return w.getType() == "Dagger" || w.getType() == "Sword"
     }
 
+    /**
+     * Armadura permitida para el ladrón.
+     */
     override fun isArmorValid(a: Armor): Boolean {
         return a.getType() == "Leather"
     }

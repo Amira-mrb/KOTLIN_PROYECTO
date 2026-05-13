@@ -12,13 +12,12 @@ class CharacterFactory {
             var character: Character? = null
             var isCPU = true
 
-            // Stats básicas
             val characterStats = Stats(
-                data[4].toInt(), // hp
-                data[5].toInt(), // atk
-                data[6].toInt(), // arm
-                data[7].toInt(), // spd
-                data[8].toInt()  // res
+                data[4].toInt(),
+                data[5].toInt(),
+                data[6].toInt(),
+                data[7].toInt(),
+                data[8].toInt()
             )
 
             val className = data[1]
@@ -26,98 +25,44 @@ class CharacterFactory {
             when (className) {
 
                 "Warrior" -> {
-                    if (data[9] == "Player")
-                        isCPU = false
-
-                    character = Warrior(
-                        data[0],             // nombre
-                        data[2],             // raza
-                        data[3].toInt(),     // nivel
-                        characterStats,
-                        isCPU
-                    )
+                    if (data[9] == "Player") isCPU = false
+                    character = Warrior(data[0], data[2], data[3].toInt(), characterStats, isCPU)
                 }
 
                 "Mage" -> {
-                    if (data[10] == "Player")
-                        isCPU = false
-
-                    characterStats.setMag(data[9].toInt()) // magia extra
-
-                    character = Mage(
-                        data[0],
-                        data[2],
-                        data[3].toInt(),
-                        characterStats,
-                        isCPU
-                    )
+                    if (data[10] == "Player") isCPU = false
+                    characterStats.setMag(data[9].toInt())
+                    character = Mage(data[0], data[2], data[3].toInt(), characterStats, isCPU)
                 }
 
                 "Thief" -> {
-                    if (data[9] == "Player")
-                        isCPU = false
-
-                    character = Thief(
-                        data[0],
-                        data[2],
-                        data[3].toInt(),
-                        characterStats,
-                        isCPU
-                    )
+                    if (data[9] == "Player") isCPU = false
+                    character = Thief(data[0], data[2], data[3].toInt(), characterStats, isCPU)
                 }
 
                 "Hunter" -> {
-                    if (data[9] == "Player")
-                        isCPU = false
-                    // Hunter no implementado
+                    if (data[9] == "Player") isCPU = false
+                    character = Hunter(data[0], data[2], data[3].toInt(), characterStats, isCPU)
                 }
 
                 "Paladin" -> {
-                    if (data[10] == "Player")
-                        isCPU = false
-
-                    characterStats.setFth(data[9].toInt()) // fe extra
-
-                    character = Paladin(
-                        data[0],
-                        data[2],
-                        data[3].toInt(),
-                        characterStats,
-                        isCPU
-                    )
+                    if (data[10] == "Player") isCPU = false
+                    characterStats.setFth(data[9].toInt())
+                    character = Paladin(data[0], data[2], data[3].toInt(), characterStats, isCPU)
                 }
 
                 "Priest" -> {
-                    if (data[10] == "Player")
-                        isCPU = false
-
-                    characterStats.setFth(data[9].toInt()) // fe extra
-
-                    character = Priest(
-                        data[0],
-                        data[2],
-                        data[3].toInt(),
-                        characterStats,
-                        isCPU
-                    )
+                    if (data[10] == "Player") isCPU = false
+                    characterStats.setFth(data[9].toInt())
+                    character = Priest(data[0], data[2], data[3].toInt(), characterStats, isCPU)
                 }
 
                 "Monster" -> {
-                    if (data[9] == "Player")
-                        isCPU = false
-
-                    character = Monster(
-                        data[0],
-                        data[2],
-                        data[3].toInt(),
-                        characterStats,
-                        isCPU
-                    )
+                    if (data[9] == "Player") isCPU = false
+                    character = Monster(data[0], data[2], data[3].toInt(), characterStats, isCPU)
                 }
 
-                else -> {
-                    throw IllegalArgumentException("${data[1]} is not a valid class. Character cannot be generated.")
-                }
+                else -> throw IllegalArgumentException("${data[1]} is not a valid class. Character cannot be generated.")
             }
 
             return character!!

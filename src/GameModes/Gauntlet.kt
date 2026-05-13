@@ -13,17 +13,29 @@ import java.io.IOException
 import java.util.ArrayList
 import java.util.HashSet
 
+/**
+ * Clase Gauntlet.
+ * Modo de juego donde el grupo de jugadores debe superar 10 combates seguidos.
+ * Cada combate da recompensas que los jugadores pueden equiparse.
+ */
 class Gauntlet {
 
     private var dungeon: Dungeon? = null
     private var playerParty: ArrayList<Character> = ArrayList()
 
+    /**
+     * Inicia el modo Gauntlet cargando la mazmorra y el grupo de jugadores.
+     */
     @Throws(IOException::class)
     fun initGauntlet(dungeonFile: File, players: ArrayList<Character>) {
         loadDungeon(dungeonFile)
         setPlayerParty(players)
     }
 
+    /**
+     * Ejecuta el Gauntlet completo.
+     * Son 10 combates o hasta que el grupo muera.
+     */
     fun playGauntlet() {
         var remainingCombats = 10
 
@@ -35,7 +47,10 @@ class Gauntlet {
             if (playerParty.isNotEmpty()) {
                 for (equip in combatPrize) {
                     var indexOfPlayer = 0
-                    while (!equipPrize(playerParty[indexOfPlayer], equip)) {
+
+                    // Evita IndexOutOfBounds si nadie puede equiparlo
+                    while (indexOfPlayer < playerParty.size &&
+                        !equipPrize(playerParty[indexOfPlayer], equip)) {
                         indexOfPlayer++
                     }
                 }
@@ -50,6 +65,10 @@ class Gauntlet {
             CombatLogManager.out("The adventurers died an ignominious death...")
     }
 
+    /**
+     * Carga la mazmorra desde un archivo.
+     * El archivo debe tener: nombre, nivel y lista de monstruos.
+     */
     @Throws(IOException::class)
     private fun loadDungeon(dungeonFile: File) {
         val dungeonName: String
@@ -57,33 +76,39 @@ class Gauntlet {
 
         if (dungeonFile.exists() && dungeonFile.canRead()) {
 
-            val br = BufferedReader(FileReader(dungeonFile))
-            var line: String?
-            var split: List<String>
-            val monsterList = HashSet<Monster>()
+            BufferedReader(FileReader(dungeonFile)).use { br ->
+                var line = br.readLine()
+                val split = line.split(",")
 
-            line = br.readLine()
-            split = line.split(",")
-            dungeonName = split[0]
-            dungeonLevel = split[1].trim().toInt()
+                dungeonName = split[0]
+                dungeonLevel = split[1].trim().toInt()
 
-            while (br.readLine().also { line = it } != null) {
-                split = line!!.split(",")
-                monsterList.add(Monster(split[1], split[0]))
+                val monsterList = HashSet<Monster>()
+
+                while (br.readLine().also { line = it } != null) {
+                    val parts = line!!.split(",")
+                    monsterList.add(Monster(parts[1], parts[0]))
+                }
+
+                dungeon = Dungeon(dungeonName, dungeonLevel, monsterList)
             }
-
-            dungeon = Dungeon(dungeonName, dungeonLevel, monsterList)
-            br.close()
 
         } else {
             throw IOException("Can't read dungeon file.")
         }
     }
 
+    /**
+     * Guarda el grupo de jugadores.
+     */
     private fun setPlayerParty(playerParty: ArrayList<Character>) {
         this.playerParty = ArrayList(playerParty)
     }
 
+    /**
+     * Intenta equipar una recompensa a un jugador.
+     * Según el tipo de objeto, llama al método correspondiente.
+     */
     private fun equipPrize(player: Character, prize: Equipment): Boolean {
         return when (prize.javaClass.simpleName) {
             "Weapon" -> player.equipWeapon(prize as Weapon)

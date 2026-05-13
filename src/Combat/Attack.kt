@@ -4,19 +4,19 @@ package Combat
  * Clase Attack.
  * Representa un ataque con un valor de daño y un tipo de daño.
  */
-class Attack {
+class Attack() {
 
-    var dmgValue: Int      // cantidad de daño
-    var dmgType: String    // tipo de daño (PHY, MAG o STA)
+    var dmgValue: Int = 0      // cantidad de daño
 
-    /**
-     * Constructor por defecto.
-     * Deja el daño a 0 y el tipo vacío.
-     */
-    constructor() {
-        dmgType = ""
-        dmgValue = 0
-    }
+    var dmgType: String = ""   // tipo de daño (PHY, MAG o STA)
+        set(value) {
+            when (value.uppercase()) {
+                "PHY", "MAG", "STA" -> field = value
+                else -> throw IllegalArgumentException(
+                    "Damage type must be either PHY for physical, MAG for magical or STA for status change."
+                )
+            }
+        }
 
     /**
      * Constructor con parámetros.
@@ -24,21 +24,15 @@ class Attack {
      * @param dmgValue valor del daño
      * @param dmgType  tipo de daño
      */
-    constructor(dmgValue: Int, dmgType: String) {
+    constructor(dmgValue: Int, dmgType: String) : this() {
         this.dmgValue = dmgValue
-        this.dmgType = dmgType
+        this.dmgType = dmgType   // pasa por el setter validado
     }
 
     /**
-     * Asigna el tipo de daño.
-     * Solo acepta PHY (físico), MAG (mágico) o STA (estado).
+     * Setter alternativo (compatibilidad con Java).
      */
     fun setDmgTypeSafe(dmgType: String) {
-        when (dmgType.uppercase()) {
-            "PHY", "MAG", "STA" -> this.dmgType = dmgType
-            else -> throw IllegalArgumentException(
-                "Damage type must be either PHY for physical, MAG for magical or STA for status change."
-            )
-        }
+        this.dmgType = dmgType   // también pasa por la validación
     }
 }

@@ -1,128 +1,80 @@
 package Characters
 
-/**
- * Clase que guarda todas las estadísticas del personaje.
- * Incluye vida, ataque, armadura, velocidad, resistencia, magia y fe.
- */
 class Stats {
 
-    var hp: Int      // vida
-    var atk: Int     // ataque
-    var arm: Int     // armadura
-    var spd: Int     // velocidad
-    var res: Int     // resistencia
-    var mag: Int     // magia
-    var fth: Int     // fe
+    private var _hp: Int = 0
+    private var _atk: Int = 0
+    private var _arm: Int = 0
+    private var _spd: Int = 0
+    private var _res: Int = 0
+    private var _mag: Int = 0
+    private var _fth: Int = 0
 
-    /**
-     * Constructor que inicia todas las stats a 0.
-     */
-    constructor() {
-        hp = 0
-        atk = 0
-        arm = 0
-        spd = 0
-        res = 0
-        mag = 0
-        fth = 0
-    }
+    fun getHp(): Int = _hp
+    fun setHp(value: Int) { _hp = value }
+    fun getAtk(): Int = _atk
+    fun setAtk(value: Int) { _atk = value }
+    fun getArm(): Int = _arm
+    fun setArm(value: Int) { _arm = value }
+    fun getSpd(): Int = _spd
+    fun setSpd(value: Int) { _spd = value }
+    fun getRes(): Int = _res
+    fun setRes(value: Int) { _res = value }
+    fun getMag(): Int = _mag
+    fun setMag(value: Int) { _mag = value }
+    fun getFth(): Int = _fth
+    fun setFth(value: Int) { _fth = value }
 
-    /**
-     * Constructor con stats básicas.
-     * Magia y fe empiezan a 0.
-     */
+    constructor()
+
     constructor(hp: Int, atk: Int, arm: Int, spd: Int, res: Int) {
-        this.hp = hp
-        this.atk = atk
-        this.arm = arm
-        this.spd = spd
-        this.res = res
-        this.mag = 0
-        this.fth = 0
+        _hp = hp; _atk = atk; _arm = arm; _spd = spd; _res = res
     }
 
-    /**
-     * Constructor con todas las stats.
-     */
     constructor(hp: Int, atk: Int, arm: Int, spd: Int, res: Int, mag: Int, fth: Int) {
-        this.hp = hp
-        this.atk = atk
-        this.arm = arm
-        this.spd = spd
-        this.res = res
-        this.mag = mag
-        this.fth = fth
+        _hp = hp; _atk = atk; _arm = arm; _spd = spd; _res = res; _mag = mag; _fth = fth
     }
 
-    /**
-     * Constructor de copia.
-     */
     constructor(other: Stats) {
-        this.hp = other.hp
-        this.atk = other.atk
-        this.arm = other.arm
-        this.spd = other.spd
-        this.res = other.res
-        this.mag = other.mag
-        this.fth = other.fth
+        _hp = other._hp; _atk = other._atk; _arm = other._arm
+        _spd = other._spd; _res = other._res; _mag = other._mag; _fth = other._fth
     }
 
-    /**
-     * Resta vida al personaje cuando recibe daño.
-     */
     fun receiveDmg(dmg: Int) {
-        this.hp -= dmg
+        _hp -= dmg
+        if (_hp < 0) _hp = 0
     }
 
-    /**
-     * Sube la guardia: aumenta armadura y resistencia.
-     */
     fun raiseGuard() {
-        this.arm = (this.arm * 1.2).toInt()
-        this.res = (this.res * 1.2).toInt()
+        _arm = (_arm * 1.2).toInt()
+        _res = (_res * 1.2).toInt()
     }
 
-    /**
-     * Baja la guardia: reduce armadura y resistencia.
-     */
     fun dropGuard() {
-        this.arm = (this.arm * 0.8).toInt()
-        this.res = (this.res * 0.8).toInt()
+        _arm = (_arm * 0.8).toInt()
+        _res = (_res * 0.8).toInt()
     }
 
-    /**
-     * Devuelve el valor de la stat pedida.
-     */
     fun getStat(stat: String): Int {
-        return when (stat) {
-            "HP" -> hp
-            "ATK" -> atk
-            "ARM" -> arm
-            "SPD" -> spd
-            "RES" -> res
-            "MAG" -> mag
-            "FTH" -> fth
+        return when (stat.uppercase()) {
+            "HP" -> _hp; "ATK" -> _atk; "ARM" -> _arm
+            "SPD" -> _spd; "RES" -> _res; "MAG" -> _mag; "FTH" -> _fth
             else -> 0
         }
     }
 
-    /**
-     * Compara si dos objetos Stats son iguales.
-     */
-    fun equals(other: Stats): Boolean {
-        return hp == other.hp &&
-                atk == other.atk &&
-                arm == other.arm &&
-                spd == other.spd &&
-                res == other.res &&
-                mag == other.mag &&
-                fth == other.fth
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Stats) return false
+        return _hp == other._hp && _atk == other._atk && _arm == other._arm &&
+                _spd == other._spd && _res == other._res && _mag == other._mag && _fth == other._fth
     }
 
-    /**
-     * Devuelve las stats principales en formato texto.
-     */
+    override fun hashCode(): Int {
+        return _hp + _atk * 2 + _arm * 3 + _spd * 4 + _res * 5 + _mag * 6 + _fth * 7
+    }
+
     override fun toString(): String {
-        return "Stats{hp=$hp, atk=$atk, arm=$arm, spd=$spd, res=$res}"
+        return "Stats{hp=$_hp, atk=$_atk, arm=$_arm, spd=$_spd, res=$_res}"
     }
 }
